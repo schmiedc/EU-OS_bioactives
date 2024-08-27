@@ -10,9 +10,9 @@ Code shows how to load, process and analyse aggregated Cell Painting data. Each 
 
 # Resources:
 
-The raw image data is hosted on the AWS Cell Painting Gallery under cpg0036-EU-OS-bioactives: XXX
+The raw image data is hosted on the AWS Cell Painting Gallery under cpg0036-EU-OS-bioactives: [https://cellpainting-gallery.s3.amazonaws.com/index.html#cpg0036-EU-OS-bioactives/](https://cellpainting-gallery.s3.amazonaws.com/index.html#cpg0036-EU-OS-bioactives/)
 
-Aggregated and processed profiles are hosted on a Zenodo repository: XXX
+Aggregated and processed profiles are hosted on a Zenodo repository: [https://zenodo.org/10.5281/zenodo.13309566](https://zenodo.org/10.5281/zenodo.13309566)
 
 # Notebooks:
 
