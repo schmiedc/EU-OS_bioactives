@@ -12,6 +12,8 @@ Aggregated and processed profiles are hosted on a Zenodo repository: [https://do
 
 The raw image data is hosted on the AWS Cell Painting Gallery under cpg0036-EU-OS-bioactives: [https://cellpainting-gallery.s3.amazonaws.com/index.html#cpg0036-EU-OS-bioactives/](https://cellpainting-gallery.s3.amazonaws.com/index.html#cpg0036-EU-OS-bioactives/)
 
+Information about the compounds: [https://www.probes-drugs.org/compounds/standardized#compoundset=353@AND](https://www.probes-drugs.org/compounds/standardized#compoundset=353@AND)
+
 # Description: 
 
 Code shows how to load, process and analyse aggregated Cell Painting data. Each folder contains the analysis for a dataset from one of the four sources (FMP, IMTM, MEDINA, USC). The notebooks were used to create the figure panels of the associated publication.
