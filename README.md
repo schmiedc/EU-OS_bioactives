@@ -42,22 +42,27 @@ Code shows how to load, process and analyse aggregated Cell Painting data. Each 
 
 ## Access & analysis of Profiles
 
-The profiles are hosted on Zenodo: [https://doi.org/10.5281/zenodo.13309565](https://doi.org/10.5281/zenodo.13309565). For the performed analysis please have a look at our article [https://doi.org/10.1101/2024.08.27.609964](https://doi.org/10.1101/2024.08.27.609964). In brief we extracted the profiles using a Cell Profiler based pipeline. This yields single cell profiles that were then aggregated using a median per well. 
+The profiles are hosted on Zenodo: [https://doi.org/10.5281/zenodo.13309565](https://doi.org/10.5281/zenodo.13309565). For the performed analysis please have a look at our article [https://doi.org/10.1101/2024.08.27.609964](https://doi.org/10.1101/2024.08.27.609964). In brief we extracted the profiles using a Cell Profiler based pipeline. This yields single cell profiles that were then aggregated using a median per well. The below Figure shows a diagram of the analysis workflow.
 
-### Aggregated profiles
+
+![Processing workflow](images/workflow.jpg)
+
+### Normalization
 
 You can get access to the per well aggregated profiles: [Aggregated_Profiles.zip](https://zenodo.org/records/13309566/files/Aggregated_Profiles.zip?download=1)
 
-Read in aggregated profiles (one example FMP U2OS)
+Focus on one example FMP U2OS.
+
+Read in aggregated profiles
 Processing: Normalization
 
-### Normalized profiles
+### Feature reduction
 
-Access to normalized profiles Profile_Analysis_Results.zip
+Access to normalized profiles [Profile_Analysis_Results.zip](https://zenodo.org/records/13309566/files/Profile_Analysis_Results.zip?download=1)
 
 Perform Feature selection
 
-### Profile aggregation and analysis
+### Profile aggregation
 
 Access to normalized and reduced profiles
 Perform basic analysis > Replication, Induction
@@ -72,7 +77,7 @@ The dataset can be viewed and navigated here: [https://cellpainting-gallery.s3.a
 
 The download process from the Cell Painting Gallery is documented here: [https://broadinstitute.github.io/cellpainting-gallery/download_instructions.html](https://broadinstitute.github.io/cellpainting-gallery/download_instructions.html)
 
-The image data can be downloaded using the Amazon Web Services Command Line Interface ([AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html)). You will first need to install these tools: [https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+The image data can be downloaded using the Amazon Web Services Command Line Interface ([AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html)). You will first need to install these tools: [https://docs.aw.amazon.com/cli/latest/userguide/getting-started-install.html](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
 Listing the dataset:
 
