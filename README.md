@@ -40,31 +40,98 @@ Code shows how to load, process and analyse aggregated Cell Painting data. Each 
 
 # Tutorial data access and analysis:
 
+## Setting up the analysis
+
+For analysis please download this repository [https://docs.github.com/en/repositories/working-with-files/using-files/downloading-source-code-archives](https://docs.github.com/en/repositories/working-with-files/using-files/downloading-source-code-archives). Alternatively there is also a version of the code provided in the [Zenodo repository](https://doi.org/10.5281/zenodo.13309565).
+
+The analysis is setup in jupyter notebooks. I work with [Visual Studio code](https://code.visualstudio.com/docs/datascience/jupyter-notebooks). But also Jupyter should work.
+
+You will need to install the necessary dependencies via the `environment.yml` file included in this repository.
+
 ## Access & analysis of Profiles
 
 The profiles are hosted on Zenodo: [https://doi.org/10.5281/zenodo.13309565](https://doi.org/10.5281/zenodo.13309565). For the performed analysis please have a look at our article [https://doi.org/10.1101/2024.08.27.609964](https://doi.org/10.1101/2024.08.27.609964). In brief we extracted the profiles using a Cell Profiler based pipeline. This yields single cell profiles that were then aggregated using a median per well. The below Figure shows a diagram of the analysis workflow.
 
 ![Processing workflow](images/workflow.jpg)
 
+### Load raw data
+
+You can get access to the per well aggregated profiles: [Aggregated_Profiles.zip](https://zenodo.org/records/13309566/files/Aggregated_Profiles.zip?download=1). Unzip the folder. Contained there are all the profiles separated by source and cell line:
+
+```
+Aggregated_Profiles
+└── aggregated_data
+    ├── FMP_HepG2
+    ├── FMP_U2OS
+    ├── IMTM_HepG2
+    ├── MEDINA_HepG2
+    └── USC_HepG2
+```
+
+In the respective folder you will then find .csv files for each plate. Here for instance with the FMP U2OS data:
+
+```
+IMTM_HepG2
+├── 2023-07-20_HepG2_10uM_B1003_R3_CP_Profiles_Aggregated.csv
+├── 2023-07-19_HepG2_10uM_B1004_R3_CP_Profiles_Aggregated.csv
+├── ...
+└── 2023-07-06_HepG2_10uM_B1001_R1_CP_Profiles_Aggregated.csv
+```
+
+The file name is then structured the same way
+
+-`2023-07-20`: With the date when they have been imaged by the microscope e.g. NOTE: this does not necessarily corrspond to the batch date as the plates could have been imaged over night.
+
+-`HepG2` cell line, in this case HepG2
+
+-`10uM` concentration of tested compounds (i.e. 10 µM)
+
+-`B1003` EU-OPENSCREEN Plate ID
+
+-`R3` Which replicate
+
+-`_Profiles_Aggregated.csv`fixed suffix
+
+To work with this data you will also need the annotation files. These are included in the [Profile_Analysis.zip](https://zenodo.org/records/13309566/files/Profile_Analysis.zip?download=1):
+
+```
+Profile_Analysis
+├── analysis_results
+├── annotations
+├── EU-OS_bioactives-1.0.0
+├── figures
+└── senescence_figure
+```
+
+The annotations are enclosed in the `annotations`folder. 
+
+In this tutorial I will focus on the processing of the IMTM HepG2 dataset. In the repository navigate to the `Analysis_IMTM/`folder of the downloaded analysis repository.
+
+Then select the notebook `1_Collect_IMTM_HepG2.ipynb` which will allow you to load the data from one site.
+
+You will need to modify directories in this notebook to use it:
+
+![LoadProfiles](images/LoadProfiles.png)
+
+1. Specify a parent directory where to find all the inputs and where you want to save the outputs.
+2. Give a path to the aggregated data you want to process (i.e. IMTM_HepG2).
+3. Specify a directory where you want to save the results of the processing.
+4. Give the path to the annotations directory.
+
+This loads the aggregated data. Merges it with the annotations and saves the output in the specified results directory. 
+
+```
+results
+├── 2024-11-27_IMTM_HepG2_raw.csv
+└── 2024-11-27_IMTM_HepG2_raw_missing_wells.csv
+```
+
+The files are save with a date `2024-11-27`, the source `IMTM`, cell line `HepG2`and the processing stage as suffix `raw.csv`.
+
 ### Normalization
 
-You can get access to the per well aggregated profiles: [Aggregated_Profiles.zip](https://zenodo.org/records/13309566/files/Aggregated_Profiles.zip?download=1)
+The results of the data loader can then be further processed. The first step is typically a normalization. You can perform this processsing using 
 
-Focus on one example FMP U2OS.
-
-Read in aggregated profiles
-Processing: Normalization
-
-### Feature reduction
-
-Access to normalized profiles [Profile_Analysis_Results.zip](https://zenodo.org/records/13309566/files/Profile_Analysis_Results.zip?download=1)
-
-Perform Feature selection
-
-### Profile aggregation
-
-Access to normalized and reduced profiles
-Perform basic analysis > Replication, Induction
 
 ## Image data
 
@@ -113,7 +180,7 @@ aws s3 cp --recursive s3://cellpainting-gallery/cpg0036-EU-OS-bioactives/ . --no
 
 For the actual download just remove the flag --dryrun.
 
-### Download asubset of the data
+### Download a subset of the data
 
 Please review the data structure and navigate the data here: [https://cellpainting-gallery.s3.amazonaws.com/index.html#cpg0036-EU-OS-bioactives/](https://cellpainting-gallery.s3.amazonaws.com/index.html#cpg0036-EU-OS-bioactives/)
 
@@ -123,7 +190,7 @@ For instance the image data of a single plate can be accessed via such a path [h
 
 Were `FMP`is the imaging site that acquired the data.`2021_09_03_Batch_HepG2` denotes the identity of the batch. `210809R1B1001__2021-09-03T15_15_17-Measurement`is the folder that contains all the images of a single plate.
 
-A single plate can be downloaded using this path: 
+A single plate can be downloaded using this path:
 
 ```
 aws s3 cp --recursive s3://cellpainting-gallery/cpg0036-EU-OS-bioactives/FMP/images/2021_09_03_Batch1_HepG2/images/210809R1B1001__2021-09-03T15_15_17-Measurement/ . --no-sign-request --dryrun
