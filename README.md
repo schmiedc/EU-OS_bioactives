@@ -37,3 +37,71 @@ Code shows how to load, process and analyse aggregated Cell Painting data. Each 
 * Analysis of Batch effects using UMAPs (Batch_QCViz.ipynb).
 * Overall cell numbers and cell numbers per control compound per dataset (CellNumber.ipynb).
 * Characterization of Bioactive compounds (Characterize_Bioactive.ipynb).
+
+# Tutorial data access and analysis
+
+## Access & analysis of Profiles
+
+The profiles are hosted on Zenodo: https://doi.org/10.5281/zenodo.13309565. The analysis of the data has been performed using a Cell Profiler pipeline (<Workflow>). 
+
+### Aggregated profiles
+
+You can get access to the per well aggregated profiles: Aggregated_Profiles.zip
+
+Read in aggregated profiles (one example FMP U2OS)
+Processing: Normalization
+
+
+### Normalized profiles
+
+Access to normalized profiles Profile_Analysis_Results.zip
+
+Perform Feature selection
+
+
+### Profile aggregation and analysis
+
+Access to normalized and reduced profiles
+Perform basic analysis > Replication, Induction 
+
+
+## Image data
+
+The image data is hosted on the Amazon Web Services (AWS) Cell Painting gallery (https://doi.org/10.1038/s41592-024-02399-z): https://github.com/broadinstitute/cellpainting-gallery
+
+The dataset name is: cpg0036-EU-OS-bioactives
+
+The download process from the Cell Painting Gallery is documented here: https://broadinstitute.github.io/cellpainting-gallery/download_instructions.html
+
+The image data can be downloaded using the Amazon Web Services Command Line Interface (AWS CLI – link: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html). You will first need to install these tools: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+
+Listing the dataset:
+
+DATASET=cpg0036-EU-OS-bioactives
+aws s3 ls s3://cellpainting-gallery/${DATASET}/ --no-sign-request
+
+### Download of entire dataset. 
+
+The entire image dataset is 3.5 TB in size. 
+
+Download the data will then be: aws s3 cp –recursive "CPG_LOCATION" "LOCAL_DESTINATION"
+
+DATASET=cpg0036-EU-OS-bioactives
+aws s3 cp --recursive s3://cellpainting-gallery/${DATASET}/ FOLDER/TO/LOCAL/ --no-sign-request
+
+If you just want to test the command before an actual download then use: 
+
+DATASET=cpg0036-EU-OS-bioactives
+aws s3 cp --recursive s3://cellpainting-gallery/${DATASET}/ FOLDER/TO/LOCAL/ --no-sign-request --dryrun
+
+For the actual download just remove the flag --dryrun. 
+
+### Notes for image data download
+
+Use the --dryrun flag before executing the download to test if the commands and as well as the source and destination locations are correct. 
+
+Please review the Cell Painting data structure guide to understand the structure of the data  provided: https://broadinstitute.github.io/cellpainting-gallery/data_structure.html
+
+You do not need an AWS account for download of the files. If you get and error with the AWS CLI command add --no-sign-request to the end of the command. 
+
+
