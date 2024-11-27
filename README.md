@@ -44,7 +44,6 @@ Code shows how to load, process and analyse aggregated Cell Painting data. Each 
 
 The profiles are hosted on Zenodo: [https://doi.org/10.5281/zenodo.13309565](https://doi.org/10.5281/zenodo.13309565). For the performed analysis please have a look at our article [https://doi.org/10.1101/2024.08.27.609964](https://doi.org/10.1101/2024.08.27.609964). In brief we extracted the profiles using a Cell Profiler based pipeline. This yields single cell profiles that were then aggregated using a median per well. The below Figure shows a diagram of the analysis workflow.
 
-
 ![Processing workflow](images/workflow.jpg)
 
 ### Normalization
@@ -81,7 +80,18 @@ The image data can be downloaded using the Amazon Web Services Command Line Inte
 
 Listing the dataset:
 
-`DATASET=cpg0036-EU-OS-bioactives aws s3 ls s3://cellpainting-gallery/${DATASET}/ --no-sign-request`
+```
+aws s3 ls s3://cellpainting-gallery/cpg0036-EU-OS-bioactives/ --no-sign-request
+```
+
+Which should result in the following output:
+
+```
+PRE FMP/
+PRE IMTM/
+PRE MEDINA/
+PRE USC/
+```
 
 ### Download of entire dataset.
 
@@ -89,15 +99,35 @@ The entire image dataset is 3.5 TB in size.
 
 Download the data will then be: `aws s3 cp --recursive "CPG_LOCATION" "LOCAL_DESTINATION"`
 
-Thus would look like this: 
+Thus would look like this:
 
-`DATASET=cpg0036-EU-OS-bioactives aws s3 cp --recursive s3://cellpainting-gallery/${DATASET}/ FOLDER/TO/LOCAL/ --no-sign-request`
+```
+aws s3 cp --recursive s3://cellpainting-gallery/cpg0036-EU-OS-bioactives/ PATH/TO/LOCAL/ --no-sign-request
+```
 
-If you just want to test the command before an actual download then use:
+If you just want to test the command before an actual download then use. IMPORTANT the . denotes the current directory:
 
-`DATASET=cpg0036-EU-OS-bioactives aws s3 cp --recursive s3://cellpainting-gallery/${DATASET}/ FOLDER/TO/LOCAL/ --no-sign-request --dryrun`
+```
+aws s3 cp --recursive s3://cellpainting-gallery/cpg0036-EU-OS-bioactives/ . --no-sign-request --dryrun
+```
 
 For the actual download just remove the flag --dryrun.
+
+### Download asubset of the data
+
+Please review the data structure and navigate the data here: [https://cellpainting-gallery.s3.amazonaws.com/index.html#cpg0036-EU-OS-bioactives/](https://cellpainting-gallery.s3.amazonaws.com/index.html#cpg0036-EU-OS-bioactives/)
+
+The image data is structured per image site (FMP, IMTM, MEDINA and USC) as well as batches (Plates that were acquired on the same time) and plates.
+
+For instance the image data of a single plate can be accessed via such a path [https://cellpainting-gallery.s3.amazonaws.com/index.html#cpg0036-EU-OS-bioactives/FMP/images/2021_09_03_Batch1_HepG2/images/210809R1B1001__2021-09-03T15_15_17-Measurement/Images/](https://cellpainting-gallery.s3.amazonaws.com/index.html#cpg0036-EU-OS-bioactives/FMP/images/2021_09_03_Batch1_HepG2/images/210809R1B1001__2021-09-03T15_15_17-Measurement/Images/)
+
+Were `FMP`is the imaging site that acquired the data.`2021_09_03_Batch_HepG2` denotes the identity of the batch. `210809R1B1001__2021-09-03T15_15_17-Measurement`is the folder that contains all the images of a single plate.
+
+A single plate can be downloaded using this path: 
+
+```
+aws s3 cp --recursive s3://cellpainting-gallery/cpg0036-EU-OS-bioactives/FMP/images/2021_09_03_Batch1_HepG2/images/210809R1B1001__2021-09-03T15_15_17-Measurement/ . --no-sign-request --dryrun
+```
 
 ### Notes for image data download
 
