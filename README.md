@@ -103,9 +103,9 @@ Profile_Analysis
 └── senescence_figure
 ```
 
-The annotations are enclosed in the `annotations`folder. 
+The annotations are enclosed in the `annotations`folder.
 
-In this tutorial I will focus on the processing of the IMTM HepG2 dataset. In the repository navigate to the `Analysis_IMTM/`folder of the downloaded analysis repository.
+In this tutorial I will focus on the processing of the IMTM HepG2 dataset. In the repository navigate to the `Analysis_IMTM/`folder of the downloaded analysis repository. The annotation file for the IMTM HepG2 data is: `2023-08-14_Annotation2_IMTM_HepG2.csv`.
 
 Then select the notebook `1_Collect_IMTM_HepG2.ipynb` which will allow you to load the data from one site.
 
@@ -118,7 +118,7 @@ You will need to modify directories in this notebook to use it:
 3. Specify a directory where you want to save the results of the processing.
 4. Give the path to the annotations directory.
 
-This loads the aggregated data. Merges it with the annotations and saves the output in the specified results directory. 
+This loads the aggregated data. Merges it with the annotations and saves the output in the specified results directory.
 
 ```
 results
@@ -130,8 +130,32 @@ The files are save with a date `2024-11-27`, the source `IMTM`, cell line `HepG2
 
 ### Normalization
 
-The results of the data loader can then be further processed. The first step is typically a normalization. You can perform this processsing using 
+The results of the data loader can then be further processed. The first step is typically a normalization. You can perform this processsing using the `2_Normalization_IMTM_HepG2.ipynb` notebook.
 
+For this notebook we need helper functions. You need to specify the location of the notebooks to import this helper functions:
+
+
+![CustomFunctions](images/CustomFunctions.png)
+
+Then specify again the location of the input data. The output can now set also to the input as we will save the results of this notebook in the same folder.
+
+![LoadForNorm](images/DataForNorm.png)
+
+This will perform a plate level normalization using the negative controls (i.e. DMSO). The function used is mad_robustize. The outputs are z-scores.
+
+The results of this processing are saved in the specified results directory:
+
+```
+results
+├── 2024-11-27_IMTM_HepG2_norm.csv
+├── 2024-11-27_IMTM_HepG2_norm_median_full.csv
+├── 2024-11-27_IMTM_HepG2_raw.csv
+└── 2024-11-27_IMTM_HepG2_raw_missing_wells.csv
+```
+
+The important results are `2024-11-27_IMTM_HepG2_norm.csv`. These contain the normalized profiles for the IMTM HepG2 per plate and replicate.
+
+These results files you can also find on the Zenodo repository in the [Profile_Analysis_Results.zip](https://zenodo.org/records/13309566/files/Profile_Analysis_Results.zip?download=1). 
 
 ## Image data
 
