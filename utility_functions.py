@@ -419,6 +419,54 @@ def remove_non_reproducible(Data, n_samples = 100, n_replicates = 4, ID_col = "M
     
     return Data_replicating, corr_replicating_df
 
+def percent_matching(Data, n_samples = 100, n_replicates = 4, ID_col = "Metadata_Gene_ID", cntrls = ["DMSO", "Nocodazole", "Tetrandrine"], description = "Data"):
+
+    corr_replicating_df = pd.DataFrame()
+
+    replicating_corr, names = list(corr_between_replicates_CP(Data, ID_col))
+    null_replicating = list(corr_between_non_replicates_CP(Data, n_samples=n_samples, n_replicates=n_replicates, metadata_compound_name = ID_col))
+
+    prop_95_replicating, value_95_replicating, perc_5 = percent_score(null_replicating, replicating_corr, how='both')
+    
+    ### this only works well for big data sets with bigger 3 repetitions. Otherwise the null distribution is very wide! Thus we set a threshold for these cases
+    
+    
+    above_threshold = replicating_corr > value_95_replicating
+    prop_95_replicating = np.mean(above_threshold.astype(float))*100
+
+
+    corr_replicating_df = corr_replicating_df.append({'Description': description,
+                                                       # 'Modality':f'{modality}',
+                                                        #'Cell':f'{cell}',
+                                                        #'time':f'{time}',
+                                                        'Replicating':replicating_corr,
+                                                        'Null_Replicating':null_replicating,
+                                                        'Percent_Replicating':'%.1f'%prop_95_replicating,
+                                                        'Value_95':value_95_replicating}, ignore_index=True)
+
+
+    print(corr_replicating_df[['Description','Percent_Replicating']].to_markdown(index=False))
+    
+    ### remove non replicating conditions
+    df = pd.DataFrame(list(zip(names, replicating_corr)),
+               columns =['Name', 'replicating_corr'])
+    
+    replicating = list(df.loc[df["replicating_corr"] > value_95_replicating, "Name"])
+    replicating.extend(cntrls)
+    replicating = list(set(replicating))
+
+    Data_replicating = Data.loc[Data[ID_col].isin(replicating)].copy()
+    
+    print("Nonreplicating conditions removed with threshold", round(value_95_replicating, 2))
+    if len(set(names) - set(replicating)) == 0:
+        print("No conditions below threshold")
+    #else:
+        #print(set(names) - set(replicating))
+    print("Old shape", Data.shape)
+    print("New shape", Data_replicating.shape)
+    
+    return Data_replicating, corr_replicating_df
+
 
 # Induction
 # Calculated directly from the fingerprints by a feature-by-feature comparison of Z scores.
@@ -453,14 +501,6 @@ def remove_low_active(df: pd.DataFrame,
     
     return Data_active, Data_non_active
 
-# %Pairing
-# Equivalent to % Matching 
-# The signal distribution, which is the median pairwise correlation between each cell pair
-# The null distribution, which is the median pairwise correlation of Compound-CRISPRs or Compound-ORF that target different genes, is computed for 1000 combinations of Compound-CRISPRs or Compound-ORFs.
-# Percent Matching is computed as the percentage of the signal distribution that is the greater than the 95th percentile of null distribution
-# The signal and noise distributions and the Percent Matching values are plotted and the table of Percent Matching is printed.
-# Copied from: https://github.com/jump-cellpainting/2021_Chandrasekaran_submitted/blob/main/benchmark/old_notebooks/2.percent_matching_across_modalities.ipynb
-# Functions from: https://github.com/jump-cellpainting/2021_Chandrasekaran_submitted/blob/main/benchmark/old_notebooks/utils.py
 
 def get_featuredata(df):
     """return dataframe of just featuredata columns"""
@@ -471,6 +511,14 @@ def get_featurecols(df):
     return [c for c in df.columns if not c.startswith("Metadata")]
 
 
+# %Pairing
+# Equivalent to %Matching across modalities
+# The signal distribution, which is the median pairwise correlation between each cell pair
+# The null distribution, which is the median pairwise correlation of Compound-CRISPRs or Compound-ORF that target different genes, is computed for 1000 combinations of Compound-CRISPRs or Compound-ORFs.
+# Percent Matching is computed as the percentage of the signal distribution that is the greater than the 95th percentile of null distribution
+# The signal and noise distributions and the Percent Matching values are plotted and the table of Percent Matching is printed.
+# Copied from: https://github.com/jump-cellpainting/2021_Chandrasekaran_submitted/blob/main/benchmark/old_notebooks/2.percent_matching_across_modalities.ipynb
+# Functions from: https://github.com/jump-cellpainting/2021_Chandrasekaran_submitted/blob/main/benchmark/old_notebooks/utils.py
 def correlation_between_modalities(modality_1_df, 
                                    modality_2_df, 
                                    modality_1, 
