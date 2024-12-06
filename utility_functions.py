@@ -524,7 +524,8 @@ def correlation_between_modalities(modality_1_df,
                                    modality_1, 
                                    modality_2, 
                                    metadata_common, 
-                                   metadata_perturbation):
+                                   metadata_perturbation,
+                                   option):
     """
     Compute the correlation between two different modalities.
     :param modality_1_df: Profiles of the first modality
@@ -540,8 +541,16 @@ def correlation_between_modalities(modality_1_df,
 
     merged_df = pd.concat([modality_1_df, modality_2_df], ignore_index=False, join='inner')
 
-    modality_1_df = merged_df.query('Metadata_Cell_type==@modality_1')
-    modality_2_df = merged_df.query('Metadata_Cell_type==@modality_2')
+    if (option == "cell_line"):
+
+        modality_1_df = merged_df.query('Metadata_Cell_type==@modality_1')
+        modality_2_df = merged_df.query('Metadata_Cell_type==@modality_2')
+
+    elif (option == "partner_site"):
+
+        modality_1_df = merged_df.query('Metadata_Partner==@modality_1')
+        modality_2_df = merged_df.query('Metadata_Partner==@modality_2')
+
 
     corr_modalities = []
 
@@ -563,7 +572,7 @@ def correlation_between_modalities(modality_1_df,
 
     return corr_modalities
 
-def null_correlation_between_modalities(modality_1_df, modality_2_df, modality_1, modality_2, metadata_common, metadata_perturbation, n_samples):
+def null_correlation_between_modalities(modality_1_df, modality_2_df, modality_1, modality_2, metadata_common, metadata_perturbation, n_samples, option):
     """
     Compute the correlation between two different modalities.
     :param modality_1_df: Profiles of the first modality
@@ -579,8 +588,15 @@ def null_correlation_between_modalities(modality_1_df, modality_2_df, modality_1
 
     merged_df = pd.concat([modality_1_df, modality_2_df], ignore_index=False, join='inner')
 
-    modality_1_df = merged_df.query('Metadata_Cell_type==@modality_1')
-    modality_2_df = merged_df.query('Metadata_Cell_type==@modality_2')
+    if (option == "cell_line"):
+
+        modality_1_df = merged_df.query('Metadata_Cell_type==@modality_1')
+        modality_2_df = merged_df.query('Metadata_Cell_type==@modality_2')
+
+    elif (option == "partner_site"):
+
+        modality_1_df = merged_df.query('Metadata_Partner==@modality_1')
+        modality_2_df = merged_df.query('Metadata_Partner==@modality_2')
 
     null_modalities = []
 
@@ -602,7 +618,6 @@ def null_correlation_between_modalities(modality_1_df, modality_2_df, modality_1
                 null_modalities.append(np.nanmedian(corr))  # median replicate correlation
 
     return null_modalities
-
 
 def percent_score(null_dist, corr_dist, how):
     """
@@ -656,6 +671,13 @@ def distribution_plot(df, metric):
         null_label = 'non-matching perturbations'
         signal = 'Matching'
         signal_label = 'matching perturbations'
+        x_label = 'Correlation between Compounds'
+    elif metric == 'Percent Pairing':
+        metric_col = 'Percent_Pairing'
+        null = 'Null_Pairing'
+        null_label = 'non-pairing perturbations'
+        signal = 'Pairing'
+        signal_label = 'pairing perturbations'
         x_label = 'Correlation between Compounds'
 
     n_experiments = len(df)
